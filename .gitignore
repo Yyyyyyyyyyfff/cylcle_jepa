@@ -6,4 +6,3 @@
 *.h5
 # 忽略所有 SSv2 数据集的分卷文件 (无论在哪个子目录)
 20bn-something-something-v2-*
-*20bn-something-something-v2-*
