@@ -1,0 +1,39 @@
+cpus_per_task: 4
+eval_name: few_shot_classification
+folder: /home/miaochengyu/VJEPA/vjepa2/ssv2_training_v2/ssv2_few_shot_eval
+mem_per_gpu: 40G
+nodes: 1
+num_workers: 4
+resume_checkpoint: false
+tag: ssv2-few-shot
+tasks_per_node: 1
+experiment:
+  few_shot:
+    num_ways: 5
+    num_shots: 5
+    num_queries: 15
+    num_episodes: 500
+  data:
+    dataset_type: VideoDataset
+    dataset_train: /home/miaochengyu/VJEPA/vjepa2/ssv2_train_labeled.csv
+    dataset_val: /home/miaochengyu/VJEPA/vjepa2/ssv2_val_clean.csv
+    frame_step: 4
+    frames_per_clip: 16
+    resolution: 256
+  optimization:
+    use_bfloat16: false
+model_kwargs:
+  checkpoint: /home/miaochengyu/VJEPA/vjepa2/ssv2_training_v2/ssv2_phase2/latest.pt
+  module_name: evals.video_classification_frozen.modelcustom.vit_encoder_multiclip
+  pretrain_kwargs:
+    encoder:
+      checkpoint_key: encoder
+      img_temporal_dim_size: null
+      model_name: vit_giant_xformers
+      patch_size: 16
+      tubelet_size: 2
+      uniform_power: true
+      use_rope: true
+  wrapper_kwargs:
+    max_frames: 16
+    use_pos_embed: false

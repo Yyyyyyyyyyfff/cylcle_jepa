@@ -1,0 +1,426 @@
+[INFO    ][2026-03-14 16:05:26][root                ][process_main             ] called-params ssv2_vitg_probe_eval/params-eval.yaml
+[INFO    ][2026-03-14 16:05:26][root                ][process_main             ] loaded params...
+{   'cpus_per_task': 4,
+    'eval_name': 'video_classification_frozen',
+    'experiment': {   'classifier': {'num_heads': 16, 'num_probe_blocks': 4},
+                      'data': {   'dataset_train': '/home/miaochengyu/VJEPA/vjepa2/ssv2_train_labeled.csv',
+                                  'dataset_type': 'VideoDataset',
+                                  'dataset_val': '/home/miaochengyu/VJEPA/vjepa2/ssv2_val_clean.csv',
+                                  'frame_step': 4,
+                                  'frames_per_clip': 16,
+                                  'num_classes': 174,
+                                  'num_segments': 1,
+                                  'num_views_per_segment': 1,
+                                  'resolution': 256},
+                      'optimization': {   'batch_size': 32,
+                                          'multihead_kwargs': [   {   'final_lr': 0.0,
+                                                                      'final_weight_decay': 0.01,
+                                                                      'lr': 0.003,
+                                                                      'start_lr': 0.003,
+                                                                      'warmup': 0.0,
+                                                                      'weight_decay': 0.01}],
+                                          'num_epochs': 1,
+                                          'use_bfloat16': False,
+                                          'use_pos_embed': False}},
+    'folder': '/home/miaochengyu/VJEPA/vjepa2/ssv2_vitg_probe_eval',
+    'mem_per_gpu': '40G',
+    'model_kwargs': {   'checkpoint': '/home/miaochengyu/VJEPA/vjepa2/vitg.pt',
+                        'module_name': 'evals.video_classification_frozen.modelcustom.vit_encoder_multiclip',
+                        'pretrain_kwargs': {   'encoder': {   'checkpoint_key': 'encoder',
+                                                              'img_temporal_dim_size': None,
+                                                              'model_name': 'vit_giant_xformers',
+                                                              'patch_size': 16,
+                                                              'tubelet_size': 2,
+                                                              'uniform_power': True,
+                                                              'use_rope': True}},
+                        'wrapper_kwargs': {   'max_frames': 16,
+                                              'use_pos_embed': False}},
+    'nodes': 1,
+    'num_workers': 4,
+    'resume_checkpoint': False,
+    'tag': 'ssv2-vitg-probe',
+    'tasks_per_node': 1,
+    'use_fsdp': False}
+[INFO    ][2026-03-14 16:05:26][root                ][init_distributed         ] Rank: 0. Distributed training not available The server socket has failed to listen on any local network address. port: 37129, useIpv6: 0, code: -98, name: EADDRINUSE, message: address already in use
+[INFO    ][2026-03-14 16:05:26][root                ][process_main             ] Running... (rank: 0/1)
+[INFO    ][2026-03-14 16:05:26][Eval runner scaffold][main                     ] Running evaluation: video_classification_frozen
+/home/miaochengyu/VJEPA/vjepa2/.venv/lib/python3.11/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[INFO    ][2026-03-14 16:05:27][root                ][init_distributed         ] SLURM vars not set (distributed training not available)
+[INFO    ][2026-03-14 16:05:27][root                ][main                     ] Initialized (rank/world-size) 0/1
+[INFO    ][2026-03-14 16:05:27][root                ][init_module              ] Loading pretrained model from /home/miaochengyu/VJEPA/vjepa2/vitg.pt
+/home/miaochengyu/VJEPA/vjepa2/evals/video_classification_frozen/modelcustom/vit_encoder_multiclip.py:50: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(checkpoint, map_location="cpu")
+[INFO    ][2026-03-14 16:05:50][root                ][init_module              ] loaded pretrained model with msg: <All keys matched successfully>
+VisionTransformer(
+  (patch_embed): PatchEmbed3D(
+    (proj): Conv3d(3, 1408, kernel_size=(2, 16, 16), stride=(2, 16, 16))
+  )
+  (blocks): ModuleList(
+    (0-39): 40 x Block(
+      (norm1): LayerNorm((1408,), eps=1e-06, elementwise_affine=True)
+      (attn): RoPEAttention(
+        (qkv): Linear(in_features=1408, out_features=4224, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=1408, out_features=1408, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((1408,), eps=1e-06, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=1408, out_features=6144, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=6144, out_features=1408, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((1408,), eps=1e-06, elementwise_affine=True)
+)
+ClipAggregation(
+  (model): VisionTransformer(
+    (patch_embed): PatchEmbed3D(
+      (proj): Conv3d(3, 1408, kernel_size=(2, 16, 16), stride=(2, 16, 16))
+    )
+    (blocks): ModuleList(
+      (0-39): 40 x Block(
+        (norm1): LayerNorm((1408,), eps=1e-06, elementwise_affine=True)
+        (attn): RoPEAttention(
+          (qkv): Linear(in_features=1408, out_features=4224, bias=True)
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=1408, out_features=1408, bias=True)
+          (proj_drop): Dropout(p=0.0, inplace=False)
+        )
+        (drop_path): Identity()
+        (norm2): LayerNorm((1408,), eps=1e-06, elementwise_affine=True)
+        (mlp): MLP(
+          (fc1): Linear(in_features=1408, out_features=6144, bias=True)
+          (act): GELU(approximate='none')
+          (fc2): Linear(in_features=6144, out_features=1408, bias=True)
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+    )
+    (norm): LayerNorm((1408,), eps=1e-06, elementwise_affine=True)
+  )
+)
+AttentiveClassifier(
+  (pooler): AttentivePooler(
+    (cross_attention_block): CrossAttentionBlock(
+      (norm1): LayerNorm((1408,), eps=1e-05, elementwise_affine=True)
+      (xattn): CrossAttention(
+        (q): Linear(in_features=1408, out_features=1408, bias=True)
+        (kv): Linear(in_features=1408, out_features=2816, bias=True)
+      )
+      (norm2): LayerNorm((1408,), eps=1e-05, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=1408, out_features=5632, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=5632, out_features=1408, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+    (blocks): ModuleList(
+      (0-2): 3 x Block(
+        (norm1): LayerNorm((1408,), eps=1e-05, elementwise_affine=True)
+        (attn): Attention(
+          (qkv): Linear(in_features=1408, out_features=4224, bias=True)
+          (attn_drop): Dropout(p=0.0, inplace=False)
+          (proj): Linear(in_features=1408, out_features=1408, bias=True)
+          (proj_drop): Dropout(p=0.0, inplace=False)
+        )
+        (drop_path): Identity()
+        (norm2): LayerNorm((1408,), eps=1e-05, elementwise_affine=True)
+        (mlp): MLP(
+          (fc1): Linear(in_features=1408, out_features=5632, bias=True)
+          (act): GELU(approximate='none')
+          (fc2): Linear(in_features=5632, out_features=1408, bias=True)
+          (drop): Dropout(p=0.0, inplace=False)
+        )
+      )
+    )
+  )
+  (linear): Linear(in_features=1408, out_features=174, bias=True)
+)
+[INFO    ][2026-03-14 16:05:56][root                ][make_videodataset        ] VideoDataset dataset created
+[INFO    ][2026-03-14 16:05:56][root                ][make_videodataset        ] VideoDataset unsupervised data loader created
+[INFO    ][2026-03-14 16:05:56][root                ][make_videodataset        ] VideoDataset dataset created
+[INFO    ][2026-03-14 16:05:56][root                ][make_videodataset        ] VideoDataset unsupervised data loader created
+[INFO    ][2026-03-14 16:05:56][root                ][main                     ] Dataloader created... iterations per epoch: 2100
+[INFO    ][2026-03-14 16:05:56][root                ][init_opt                 ] Using AdamW
+[INFO    ][2026-03-14 16:05:56][root                ][main                     ] Epoch 1
+/home/miaochengyu/VJEPA/vjepa2/evals/video_classification_frozen/eval.py:314: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(dtype=torch.float16, enabled=use_bfloat16):
+[INFO    ][2026-03-14 16:06:13][root                ][run_one_epoch            ] DEBUG labels: min=0, max=172, shape=torch.Size([32])
+/home/miaochengyu/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/lib/python3.11/contextlib.py:105: FutureWarning: `torch.backends.cuda.sdp_kernel()` is deprecated. In the future, this context manager will be removed. Please see `torch.nn.attention.sdpa_kernel()` for the new context manager, with updated signature.
+  self.gen = func(*args, **kwds)
+[INFO    ][2026-03-14 16:06:25][root                ][run_one_epoch            ] DEBUG encoder output: <class 'list'>, len=1
+[INFO    ][2026-03-14 16:06:25][root                ][run_one_epoch            ] DEBUG encoder output[0]: shape=torch.Size([32, 2048, 1408])
+[INFO    ][2026-03-14 16:06:29][root                ][run_one_epoch            ] DEBUG classifier output: shape=torch.Size([32, 174])
+[INFO    ][2026-03-14 16:06:29][root                ][run_one_epoch            ] DEBUG itr=0, loss=5.1558
+[INFO    ][2026-03-14 16:06:29][root                ][run_one_epoch            ] DEBUG optimizer 0: 51 params
+[INFO    ][2026-03-14 16:06:29][root                ][run_one_epoch            ] DEBUG param shape: torch.Size([1, 1, 1408]), requires_grad: True
+[INFO    ][2026-03-14 16:06:29][root                ][run_one_epoch            ] DEBUG param shape: torch.Size([1408]), requires_grad: True
+[INFO    ][2026-03-14 16:06:29][root                ][run_one_epoch            ] DEBUG param shape: torch.Size([1408]), requires_grad: True
+[INFO    ][2026-03-14 16:06:29][root                ][run_one_epoch            ] DEBUG itr=0, grad is None!
+DEBUG: calling backward for itr=0, use_bfloat16=False
+DEBUG: backward done for itr=0
+DEBUG itr=0, grad after step: tensor([[-5.4240e-03, -1.5895e-02,  8.8311e-03,  ...,  1.0939e-02,
+         -4.2556e-04, -2.4080e-02],
+        [ 3.8255e-05,  7.1503e-04, -8.8395e-04,  ...,  1.9003e-03,
+         -9.7927e-06,  5.9372e-04],
+        [ 5.8760e-05,  4.2549e-04, -6.4972e-04,  ...,  1.4378e-03,
+          3.8821e-05,  4.3421e-04],
+        ...,
+        [ 1.4012e-04,  4.9328e-04, -6.6746e-04,  ...,  1.2926e-03,
+          4.5852e-05,  5.9902e-04],
+        [-5.0637e-03, -9.9113e-03, -8.6861e-03,  ...,  3.2136e-04,
+          1.3517e-03, -1.6011e-02],
+        [ 3.1129e-04,  7.4138e-04, -1.0750e-03,  ...,  2.2478e-03,
+          1.1233e-04,  9.8555e-04]], device='cuda:0')
+[INFO    ][2026-03-14 16:06:31][root                ][run_one_epoch            ] [    0] 0.000% [0.000% 0.000%] [mem: 1.29e+04]
+[INFO    ][2026-03-14 16:06:46][root                ][run_one_epoch            ] DEBUG itr=1, loss=8.8610
+[INFO    ][2026-03-14 16:06:46][root                ][run_one_epoch            ] DEBUG itr=1, grad is None!
+DEBUG: calling backward for itr=1, use_bfloat16=False
+DEBUG: backward done for itr=1
+DEBUG itr=1, grad after step: tensor([[ 1.6833e-02,  4.1990e-03,  1.0873e-02,  ...,  1.3382e-02,
+          4.6719e-04, -8.1025e-03],
+        [ 9.5212e-06,  2.3182e-06,  6.4327e-06,  ...,  7.7287e-06,
+          4.2150e-07, -4.7590e-06],
+        [ 1.5118e-04,  3.7300e-05,  1.0363e-04,  ...,  1.2339e-04,
+          7.4410e-06, -7.7512e-05],
+        ...,
+        [ 7.1568e-05,  1.7563e-05,  4.8497e-05,  ...,  5.8161e-05,
+          3.1891e-06, -3.6016e-05],
+        [ 3.2625e-03,  7.6545e-04,  2.1731e-03,  ...,  2.6243e-03,
+          1.3484e-04, -1.5972e-03],
+        [ 1.7559e-05,  4.3067e-06,  1.2022e-05,  ...,  1.4324e-05,
+          8.4250e-07, -8.9504e-06]], device='cuda:0')
+[INFO    ][2026-03-14 16:07:03][root                ][run_one_epoch            ] DEBUG itr=2, loss=11.0972
+[INFO    ][2026-03-14 16:07:03][root                ][run_one_epoch            ] DEBUG itr=2, grad is None!
+DEBUG: calling backward for itr=2, use_bfloat16=False
+DEBUG: backward done for itr=2
+DEBUG itr=2, grad after step: tensor([[-3.3021e-10, -4.8094e-10, -3.2314e-10,  ..., -1.8679e-10,
+         -2.1424e-10,  9.6882e-11],
+        [-4.8618e-01, -7.0807e-01, -4.7555e-01,  ..., -2.7487e-01,
+         -3.1532e-01,  1.4262e-01],
+        [-1.2674e-02, -1.8456e-02, -1.2395e-02,  ..., -7.1645e-03,
+         -8.2192e-03,  3.7161e-03],
+        ...,
+        [-9.7910e-03, -1.4259e-02, -9.5772e-03,  ..., -5.5352e-03,
+         -6.3503e-03,  2.8723e-03],
+        [ 1.1129e-01,  1.6105e-01,  1.0776e-01,  ...,  6.2376e-02,
+          7.1805e-02, -3.1679e-02],
+        [-3.8064e-02, -5.5431e-02, -3.7226e-02,  ..., -2.1517e-02,
+         -2.4685e-02,  1.1162e-02]], device='cuda:0')
+[INFO    ][2026-03-14 16:07:20][root                ][run_one_epoch            ] DEBUG itr=3, loss=172.5793
+[INFO    ][2026-03-14 16:07:20][root                ][run_one_epoch            ] DEBUG itr=3, grad is None!
+DEBUG: calling backward for itr=3, use_bfloat16=False
+DEBUG: backward done for itr=3
+DEBUG itr=3, grad after step: tensor([[0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        ...,
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.],
+        [0., 0., 0.,  ..., 0., 0., 0.]], device='cuda:0')
+[INFO    ][2026-03-14 16:07:38][root                ][run_one_epoch            ] DEBUG itr=4, loss=130.6856
+[INFO    ][2026-03-14 16:07:38][root                ][run_one_epoch            ] DEBUG itr=4, grad is None!
+DEBUG: calling backward for itr=4, use_bfloat16=False
+DEBUG: backward done for itr=4
+DEBUG itr=4, grad after step: tensor([[ 0.0000e+00,  0.0000e+00,  0.0000e+00,  ...,  0.0000e+00,
+          0.0000e+00,  0.0000e+00],
+        [ 0.0000e+00,  0.0000e+00,  0.0000e+00,  ...,  0.0000e+00,
+          0.0000e+00,  0.0000e+00],
+        [-1.0690e-36,  1.1752e-36,  1.6595e-36,  ..., -1.3348e-36,
+          7.8619e-37, -3.0824e-36],
+        ...,
+        [-1.1846e-36,  1.3028e-36,  1.8442e-36,  ..., -1.4825e-36,
+          8.7374e-37, -3.4224e-36],
+        [ 0.0000e+00,  0.0000e+00,  0.0000e+00,  ...,  0.0000e+00,
+          0.0000e+00,  0.0000e+00],
+        [ 1.8408e-01, -2.0243e-01, -2.7664e-01,  ...,  2.2620e-01,
+         -1.3017e-01,  5.1940e-01]], device='cuda:0')
+DEBUG: calling backward for itr=5, use_bfloat16=False
+DEBUG: backward done for itr=5
+DEBUG: calling backward for itr=6, use_bfloat16=False
+DEBUG: backward done for itr=6
+DEBUG: calling backward for itr=7, use_bfloat16=False
+DEBUG: backward done for itr=7
+DEBUG: calling backward for itr=8, use_bfloat16=False
+DEBUG: backward done for itr=8
+DEBUG: calling backward for itr=9, use_bfloat16=False
+DEBUG: backward done for itr=9
+DEBUG: calling backward for itr=10, use_bfloat16=False
+DEBUG: backward done for itr=10
+[INFO    ][2026-03-14 16:09:22][root                ][run_one_epoch            ] [   10] 0.568% [0.568% 0.568%] [mem: 1.36e+04]
+DEBUG: calling backward for itr=11, use_bfloat16=False
+DEBUG: backward done for itr=11
+DEBUG: calling backward for itr=12, use_bfloat16=False
+DEBUG: backward done for itr=12
+DEBUG: calling backward for itr=13, use_bfloat16=False
+DEBUG: backward done for itr=13
+DEBUG: calling backward for itr=14, use_bfloat16=False
+DEBUG: backward done for itr=14
+DEBUG: calling backward for itr=15, use_bfloat16=False
+DEBUG: backward done for itr=15
+DEBUG: calling backward for itr=16, use_bfloat16=False
+DEBUG: backward done for itr=16
+DEBUG: calling backward for itr=17, use_bfloat16=False
+DEBUG: backward done for itr=17
+DEBUG: calling backward for itr=18, use_bfloat16=False
+DEBUG: backward done for itr=18
+DEBUG: calling backward for itr=19, use_bfloat16=False
+DEBUG: backward done for itr=19
+DEBUG: calling backward for itr=20, use_bfloat16=False
+DEBUG: backward done for itr=20
+[INFO    ][2026-03-14 16:12:17][root                ][run_one_epoch            ] [   20] 0.446% [0.446% 0.446%] [mem: 1.36e+04]
+DEBUG: calling backward for itr=21, use_bfloat16=False
+DEBUG: backward done for itr=21
+DEBUG: calling backward for itr=22, use_bfloat16=False
+DEBUG: backward done for itr=22
+DEBUG: calling backward for itr=23, use_bfloat16=False
+DEBUG: backward done for itr=23
+DEBUG: calling backward for itr=24, use_bfloat16=False
+DEBUG: backward done for itr=24
+DEBUG: calling backward for itr=25, use_bfloat16=False
+DEBUG: backward done for itr=25
+DEBUG: calling backward for itr=26, use_bfloat16=False
+DEBUG: backward done for itr=26
+DEBUG: calling backward for itr=27, use_bfloat16=False
+DEBUG: backward done for itr=27
+DEBUG: calling backward for itr=28, use_bfloat16=False
+DEBUG: backward done for itr=28
+DEBUG: calling backward for itr=29, use_bfloat16=False
+DEBUG: backward done for itr=29
+DEBUG: calling backward for itr=30, use_bfloat16=False
+DEBUG: backward done for itr=30
+[INFO    ][2026-03-14 16:15:11][root                ][run_one_epoch            ] [   30] 0.806% [0.806% 0.806%] [mem: 1.36e+04]
+DEBUG: calling backward for itr=31, use_bfloat16=False
+DEBUG: backward done for itr=31
+DEBUG: calling backward for itr=32, use_bfloat16=False
+DEBUG: backward done for itr=32
+DEBUG: calling backward for itr=33, use_bfloat16=False
+DEBUG: backward done for itr=33
+DEBUG: calling backward for itr=34, use_bfloat16=False
+DEBUG: backward done for itr=34
+DEBUG: calling backward for itr=35, use_bfloat16=False
+DEBUG: backward done for itr=35
+DEBUG: calling backward for itr=36, use_bfloat16=False
+DEBUG: backward done for itr=36
+DEBUG: calling backward for itr=37, use_bfloat16=False
+DEBUG: backward done for itr=37
+DEBUG: calling backward for itr=38, use_bfloat16=False
+DEBUG: backward done for itr=38
+DEBUG: calling backward for itr=39, use_bfloat16=False
+DEBUG: backward done for itr=39
+DEBUG: calling backward for itr=40, use_bfloat16=False
+DEBUG: backward done for itr=40
+[INFO    ][2026-03-14 16:18:06][root                ][run_one_epoch            ] [   40] 0.762% [0.762% 0.762%] [mem: 1.36e+04]
+DEBUG: calling backward for itr=41, use_bfloat16=False
+DEBUG: backward done for itr=41
+DEBUG: calling backward for itr=42, use_bfloat16=False
+DEBUG: backward done for itr=42
+DEBUG: calling backward for itr=43, use_bfloat16=False
+DEBUG: backward done for itr=43
+DEBUG: calling backward for itr=44, use_bfloat16=False
+DEBUG: backward done for itr=44
+DEBUG: calling backward for itr=45, use_bfloat16=False
+DEBUG: backward done for itr=45
+DEBUG: calling backward for itr=46, use_bfloat16=False
+DEBUG: backward done for itr=46
+DEBUG: calling backward for itr=47, use_bfloat16=False
+DEBUG: backward done for itr=47
+DEBUG: calling backward for itr=48, use_bfloat16=False
+DEBUG: backward done for itr=48
+DEBUG: calling backward for itr=49, use_bfloat16=False
+DEBUG: backward done for itr=49
+DEBUG: calling backward for itr=50, use_bfloat16=False
+DEBUG: backward done for itr=50
+[INFO    ][2026-03-14 16:21:01][root                ][run_one_epoch            ] [   50] 0.919% [0.919% 0.919%] [mem: 1.36e+04]
+DEBUG: calling backward for itr=51, use_bfloat16=False
+DEBUG: backward done for itr=51
+DEBUG: calling backward for itr=52, use_bfloat16=False
+DEBUG: backward done for itr=52
+DEBUG: calling backward for itr=53, use_bfloat16=False
+DEBUG: backward done for itr=53
+DEBUG: calling backward for itr=54, use_bfloat16=False
+DEBUG: backward done for itr=54
+DEBUG: calling backward for itr=55, use_bfloat16=False
+DEBUG: backward done for itr=55
+DEBUG: calling backward for itr=56, use_bfloat16=False
+DEBUG: backward done for itr=56
+DEBUG: calling backward for itr=57, use_bfloat16=False
+DEBUG: backward done for itr=57
+DEBUG: calling backward for itr=58, use_bfloat16=False
+DEBUG: backward done for itr=58
+DEBUG: calling backward for itr=59, use_bfloat16=False
+DEBUG: backward done for itr=59
+DEBUG: calling backward for itr=60, use_bfloat16=False
+DEBUG: backward done for itr=60
+[INFO    ][2026-03-14 16:23:55][root                ][run_one_epoch            ] [   60] 0.922% [0.922% 0.922%] [mem: 1.36e+04]
+DEBUG: calling backward for itr=61, use_bfloat16=False
+DEBUG: backward done for itr=61
+DEBUG: calling backward for itr=62, use_bfloat16=False
+DEBUG: backward done for itr=62
+DEBUG: calling backward for itr=63, use_bfloat16=False
+DEBUG: backward done for itr=63
+DEBUG: calling backward for itr=64, use_bfloat16=False
+DEBUG: backward done for itr=64
+DEBUG: calling backward for itr=65, use_bfloat16=False
+DEBUG: backward done for itr=65
+DEBUG: calling backward for itr=66, use_bfloat16=False
+DEBUG: backward done for itr=66
+DEBUG: calling backward for itr=67, use_bfloat16=False
+DEBUG: backward done for itr=67
+DEBUG: calling backward for itr=68, use_bfloat16=False
+DEBUG: backward done for itr=68
+DEBUG: calling backward for itr=69, use_bfloat16=False
+DEBUG: backward done for itr=69
+DEBUG: calling backward for itr=70, use_bfloat16=False
+DEBUG: backward done for itr=70
+[INFO    ][2026-03-14 16:26:50][root                ][run_one_epoch            ] [   70] 0.880% [0.880% 0.880%] [mem: 1.36e+04]
+DEBUG: calling backward for itr=71, use_bfloat16=False
+DEBUG: backward done for itr=71
+DEBUG: calling backward for itr=72, use_bfloat16=False
+DEBUG: backward done for itr=72
+DEBUG: calling backward for itr=73, use_bfloat16=False
+DEBUG: backward done for itr=73
+DEBUG: calling backward for itr=74, use_bfloat16=False
+DEBUG: backward done for itr=74
+DEBUG: calling backward for itr=75, use_bfloat16=False
+DEBUG: backward done for itr=75
+DEBUG: calling backward for itr=76, use_bfloat16=False
+DEBUG: backward done for itr=76
+DEBUG: calling backward for itr=77, use_bfloat16=False
+DEBUG: backward done for itr=77
+DEBUG: calling backward for itr=78, use_bfloat16=False
+DEBUG: backward done for itr=78
+DEBUG: calling backward for itr=79, use_bfloat16=False
+DEBUG: backward done for itr=79
+DEBUG: calling backward for itr=80, use_bfloat16=False
+DEBUG: backward done for itr=80
+[INFO    ][2026-03-14 16:29:44][root                ][run_one_epoch            ] [   80] 0.849% [0.849% 0.849%] [mem: 1.36e+04]
+DEBUG: calling backward for itr=81, use_bfloat16=False
+DEBUG: backward done for itr=81
+DEBUG: calling backward for itr=82, use_bfloat16=False
+DEBUG: backward done for itr=82
+DEBUG: calling backward for itr=83, use_bfloat16=False
+DEBUG: backward done for itr=83
+DEBUG: calling backward for itr=84, use_bfloat16=False
+DEBUG: backward done for itr=84
+DEBUG: calling backward for itr=85, use_bfloat16=False
+DEBUG: backward done for itr=85
+DEBUG: calling backward for itr=86, use_bfloat16=False
+DEBUG: backward done for itr=86
+DEBUG: calling backward for itr=87, use_bfloat16=False
+DEBUG: backward done for itr=87
+DEBUG: calling backward for itr=88, use_bfloat16=False
+DEBUG: backward done for itr=88
+DEBUG: calling backward for itr=89, use_bfloat16=False
+DEBUG: backward done for itr=89
+DEBUG: calling backward for itr=90, use_bfloat16=False
+DEBUG: backward done for itr=90
+[INFO    ][2026-03-14 16:32:39][root                ][run_one_epoch            ] [   90] 0.893% [0.893% 0.893%] [mem: 1.36e+04]
+/home/miaochengyu/.local/share/uv/python/cpython-3.11.14-linux-x86_64-gnu/lib/python3.11/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 20 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

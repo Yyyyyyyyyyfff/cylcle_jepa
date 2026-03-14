@@ -1,0 +1,50 @@
+cpus_per_task: 4
+eval_name: video_classification_frozen
+folder: /home/miaochengyu/VJEPA/vjepa2/ssv2_vitg_probe_eval
+mem_per_gpu: 40G
+nodes: 1
+num_workers: 4
+resume_checkpoint: false
+tag: ssv2-vitg-probe
+tasks_per_node: 1
+experiment:
+  classifier:
+    num_heads: 16
+    num_probe_blocks: 4
+  data:
+    dataset_type: VideoDataset
+    dataset_train: /home/miaochengyu/VJEPA/vjepa2/ssv2_train_labeled.csv
+    dataset_val: /home/miaochengyu/VJEPA/vjepa2/ssv2_val_clean.csv
+    frame_step: 4
+    frames_per_clip: 16
+    num_classes: 174
+    num_segments: 1
+    num_views_per_segment: 1
+    resolution: 256
+  optimization:
+    batch_size: 32
+    use_bfloat16: false
+    use_pos_embed: false
+    multihead_kwargs:
+      - weight_decay: 0.01
+        final_weight_decay: 0.01
+        start_lr: 0.003
+        lr: 0.003
+        final_lr: 0.0
+        warmup: 0.0
+    num_epochs: 1
+model_kwargs:
+  checkpoint: /home/miaochengyu/VJEPA/vjepa2/vitg.pt
+  module_name: evals.video_classification_frozen.modelcustom.vit_encoder_multiclip
+  pretrain_kwargs:
+    encoder:
+      checkpoint_key: encoder
+      img_temporal_dim_size: null
+      model_name: vit_giant_xformers
+      patch_size: 16
+      tubelet_size: 2
+      uniform_power: true
+      use_rope: true
+  wrapper_kwargs:
+    max_frames: 16
+    use_pos_embed: false

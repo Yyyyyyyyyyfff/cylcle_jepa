@@ -1,0 +1,84 @@
+app: vjepa
+nodes: 1
+tasks_per_node: 1
+cpus_per_task: 4
+mem_per_gpu: 20G
+folder: /home/miaochengyu/VJEPA/vjepa2/cycle_jePA_video
+debugmode: true
+data:
+  dataset_type: VideoDataset
+  datasets:
+  - /your/path/to/video_data/train.csv
+  datasets_weights:
+  - 1.0
+  batch_size: 1
+  crop_size: 224
+  patch_size: 16
+  dataset_fpcs:
+  - 16
+  tubelet_size: 2
+  fps: 8
+  num_workers: 0
+  persistent_workers: false
+  pin_mem: true
+data_aug:
+  auto_augment: false
+  motion_shift: false
+  random_resize_aspect_ratio:
+  - 0.75
+  - 1.35
+  random_resize_scale:
+  - 0.3
+  - 1.0
+  reprob: 0.0
+loss:
+  loss_exp: 1.0
+mask:
+- aspect_ratio:
+  - 0.75
+  - 1.5
+  full_complement: false
+  max_keep: null
+  max_temporal_keep: 1.0
+  num_blocks: 8
+  spatial_scale:
+  - 0.15
+  - 0.15
+  temporal_scale:
+  - 1.0
+  - 1.0
+meta:
+  dtype: bfloat16
+  eval_freq: 100
+  load_checkpoint: false
+  read_checkpoint: null
+  save_every_freq: 50
+  seed: 239
+  use_sdpa: true
+model:
+  model_name: vit_base
+  pred_depth: 6
+  pred_embed_dim: 384
+  pred_num_heads: 12
+  uniform_power: true
+  use_activation_checkpointing: false
+  use_mask_tokens: true
+  use_rope: true
+  zero_init_mask_tokens: true
+  use_cycle_loss: true
+  cycle_alpha: 0.5
+  cycle_pred_depth: 2
+  backward_lr_scale: 0.1
+optimization:
+  ema:
+  - 0.999
+  - 0.999
+  epochs: 35
+  final_lr: 0.0001
+  final_weight_decay: 0.04
+  ipe: 150
+  ipe_scale: 1.0
+  lr: 0.0001
+  start_lr: 0.00001
+  warmup: 5
+  weight_decay: 0.04

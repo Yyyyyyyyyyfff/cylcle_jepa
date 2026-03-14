@@ -1,0 +1,89 @@
+app: vjepa
+cpus_per_task: 4
+data:
+  batch_size: 16
+  crop_size: 256
+  dataset_fpcs:
+  - 16
+  dataset_type: VideoDataset
+  datasets:
+  - /home/miaochengyu/VJEPA/vjepa2/ssv2_train.csv
+  datasets_weights:
+  - 1.0
+  fps: 4
+  num_workers: 4
+  patch_size: 16
+  persistent_workers: true
+  pin_mem: true
+  tubelet_size: 2
+data_aug:
+  auto_augment: false
+  motion_shift: false
+  random_resize_aspect_ratio:
+  - 0.75
+  - 1.35
+  random_resize_scale:
+  - 0.3
+  - 1.0
+  reprob: 0.0
+debugmode: true
+folder: /home/miaochengyu/VJEPA/vjepa2/ssv2_training_v2/ssv2_phase1
+loss:
+  loss_exp: 1.0
+mask:
+- aspect_ratio:
+  - 0.75
+  - 1.5
+  full_complement: false
+  max_keep: null
+  max_temporal_keep: 1.0
+  num_blocks: 8
+  spatial_scale:
+  - 0.15
+  - 0.15
+  temporal_scale:
+  - 1.0
+  - 1.0
+mem_per_gpu: 40G
+meta:
+  best_checkpoint_freq: 100
+  dtype: bfloat16
+  eval_freq: 1000
+  load_checkpoint: true
+  load_encoder: true
+  load_predictor: true
+  pretrain_checkpoint: /home/miaochengyu/VJEPA/vjepa2/vitg.pt
+  save_best_checkpoint: true
+  save_every_freq: -1
+  seed: 239
+  training_phase: 1
+  use_sdpa: true
+model:
+  backward_lr_scale: 1.2
+  cycle_alpha: 0.35
+  cycle_pred_depth: 6
+  model_name: vit_giant_xformers
+  pred_depth: 12
+  pred_embed_dim: 384
+  pred_num_heads: 12
+  uniform_power: true
+  use_activation_checkpointing: true
+  use_cycle_loss: true
+  use_mask_tokens: true
+  use_rope: true
+  zero_init_mask_tokens: true
+nodes: 1
+optimization:
+  ema:
+  - 0.999
+  - 0.999
+  epochs: 3
+  final_lr: 0.0001
+  final_weight_decay: 0.04
+  ipe: 2560
+  ipe_scale: 1.0
+  lr: 0.0003
+  start_lr: 3.0e-05
+  warmup: 1
+  weight_decay: 0.04
+tasks_per_node: 1
